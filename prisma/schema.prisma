@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String      @id @default(uuid())
+  email      String      @unique
+  password   String
+  pin        String
+  is_verified Boolean @default(false)
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  credential Credential?
+  sessions   Session[]
+  addresses  Address[]
+  accounts   Account[]
+
+  @@map("users")
+}
+
+model Credential {
+  id           String   @id @default(uuid())
+  first_name   String
+  last_name    String
+  birth_place  String
+  birth_date   DateTime
+  phone_number String 
+  national_id  String 
+  is_employeed Boolean  @default(false)
+  job          String
+  mother_name  String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  user_id      String   @unique
+  user         User     @relation(fields: [user_id], references: [id])
+
+  @@map("credentials")
+}
+
+model Session {
+  id            String   @id @default(uuid())
+  access_token  String
+  refresh_token String
+  is_mobile     Boolean  @default(false)
+  expired_at    DateTime
+  user          User?    @relation(fields: [user_id], references: [id])
+  user_id       String?
+
+  @@unique([user_id])
+  @@map("sessions")
+}
+
+model Address {
+  id          String        @id @default(uuid())
+  street      String?
+  district    String
+  regency     String
+  province    String
+  country     String
+  postal_code String
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  type        Address_type?
+  user        User?         @relation(fields: [user_id], references: [id])
+  user_id     String?
+
+  @@unique([user_id])
+  @@map("addresses")
+}
+
+model Address_type {
+  id          String  @id @unique
+  description String
+  address     Address @relation(fields: [address_id], references: [id])
+  address_id  String
+
+  @@unique([address_id])
+  @@map("address_type")
+}
+
+model Account {
+  id            String        @id @default(uuid())
+  number        String        @unique
+  balance       Float
+  interest_rate Float
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  type          Account_type?
+  transaction   Transaction[]
+  user          User?         @relation(fields: [user_id], references: [id])
+  user_id       String?
+
+  @@unique([user_id])
+  @@map("accounts")
+}
+
+model Account_type {
+  id          String  @id @unique
+  description String
+  account     Account @relation(fields: [account_id], references: [id])
+  account_id  String
+
+  @@unique([account_id])
+  @@map("account_type")
+}
+
+model Transaction {
+  id          String            @id @default(uuid())
+  amount      Float
+  description String
+  created_at  DateTime          @default(now())
+  updated_at  DateTime          @updatedAt
+  type        Transaction_type?
+  account     Account?          @relation(fields: [account_id], references: [id])
+  account_id  String?
+
+  @@map("transactions")
+}
+
+model Transaction_type {
+  id             String      @id @unique
+  description    String
+  transaction    Transaction @relation(fields: [transaction_id], references: [id])
+  transaction_id String
+
+  @@unique([transaction_id])
+  @@map("transaction_type")
+}
