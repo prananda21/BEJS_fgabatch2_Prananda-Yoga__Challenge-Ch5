@@ -6,7 +6,7 @@ export const userSchema = Joi.object({
     pin: Joi.string().required(),
 })
 
-export const userCredentialSchema = Joi.object({
+export const credentialSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     phone: Joi.string().required(),
@@ -17,4 +17,8 @@ export const userCredentialSchema = Joi.object({
     job: Joi.string(),
     motherName: Joi.string().required(),
     userId: Joi.string().required(),
+})
+
+export const idSchema = Joi.object({
+    id: Joi.string().required(),
 })
