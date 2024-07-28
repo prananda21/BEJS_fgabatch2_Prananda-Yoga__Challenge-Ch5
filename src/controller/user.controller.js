@@ -1,32 +1,101 @@
+import { DuplicateDataError } from "../error/DuplicateDataError.js"
+import { NotFoundError } from "../error/NotFoundError.js"
 import { ValidationError } from "../error/ValidationError.js"
 import { prisma } from "../provider/prisma.js"
 import UserRepository from "../repository/user.repository.js"
 import { HttpStatusCode, HttpStatusMessage } from "../utils/enum.js"
-import { userSchema } from "../utils/validation.js"
+import { idSchema, userSchema } from "../utils/validation.js"
 
 class UserController {
-    static create = async (req, res) => {
-        const { email, password, pin } = req.body
+    static register = async (req, res, next) => {
+        try {
+            const { email, password, pin } = req.body
 
-        const { value, error } = userSchema.validate({
-            email: email,
-            password: password,
-            pin: pin,
-        })
+            const { value, error } = userSchema.validate({
+                email: email,
+                password: password,
+                pin: pin,
+            })
 
-        if (error)
-            throw new ValidationError(HttpStatusCode.BAD_REQUEST, error.message)
+            if (error)
+                throw new ValidationError(
+                    HttpStatusCode.BAD_REQUEST,
+                    error.message
+                )
 
-        const [_, user] = await prisma.$transaction([
-            UserRepository.create(email, password, pin),
-            UserRepository.findByEmail(email),
-        ])
+            const data = await UserRepository.findByEmail(value.email)
+            if (data) throw new DuplicateDataError()
 
-        res.status(HttpStatusCode.CREATED).json({
-            status: true,
-            message: HttpStatusMessage.SUCCESS_REGISTER,
-            data: user,
-        })
+            const user = await prisma.$transaction([
+                UserRepository.create(value.email, value.password, value.pin),
+            ])
+
+            return res.status(HttpStatusCode.CREATED).json({
+                status: true,
+                message: HttpStatusMessage.SUCCESS_REGISTER,
+                data: user,
+            })
+        } catch (error) {
+            if (
+                error instanceof ValidationError ||
+                error instanceof DuplicateDataError
+            ) {
+                res.status(error.code).json({
+                    status: false,
+                    message: error.message,
+                    data: null,
+                })
+            } else {
+                next(error)
+            }
+        }
+    }
+
+    static get = async (req, res, next) => {
+        try {
+            const { id } = req.params
+
+            const { value, error } = idSchema.validate({
+                id: id,
+            })
+
+            if (error) {
+                throw new ValidationError(
+                    HttpStatusCode.BAD_REQUEST,
+                    HttpStatusMessage.VALIDATION_ERROR
+                )
+            }
+
+            const user = await UserRepository.findById(value.id)
+            if (!user) throw new NotFoundError()
+
+            return res.status(HttpStatusCode.ACCEPTED).json({
+                status: true,
+                message: HttpStatusMessage.SUCCESS_FOUND_USER,
+                data: user,
+            })
+        } catch (error) {
+            if (
+                error instanceof ValidationError ||
+                error instanceof NotFoundError
+            ) {
+                return res.status(error.code).json({
+                    status: false,
+                    message: error.message,
+                    data: null,
+                })
+            } else {
+                next(error)
+            }
+        }
+    }
+
+    static update = (req, res, next) => {
+        try {
+            
+        } catch (error) {
+            
+        }
     }
 }
 

@@ -9,6 +9,26 @@ class UserRepository {
                 password: hashing(password),
                 pin: hashing(pin),
             },
+            select: {
+                id: true,
+                email: true,
+                is_verified: true,
+            },
+        })
+
+        return user
+    }
+
+    static findById = (id) => {
+        const user = prisma.user.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                id: true,
+                email: true,
+                is_verified: true,
+            },
         })
 
         return user

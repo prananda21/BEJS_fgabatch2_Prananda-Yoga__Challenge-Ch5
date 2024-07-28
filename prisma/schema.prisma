@@ -35,7 +35,7 @@ model Credential {
   first_name   String
   last_name    String
   birth_place  String
-  birth_date   DateTime
+  birth_date   DateTime @db.Date
   phone_number String 
   national_id  String 
   is_employeed Boolean  @default(false)
