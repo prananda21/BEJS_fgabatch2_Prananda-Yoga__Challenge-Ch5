@@ -83,8 +83,8 @@ model Address {
 model Address_type {
   id          String  @id @unique
   description String
-  address     Address @relation(fields: [address_id], references: [id])
-  address_id  String
+  address     Address? @relation(fields: [address_id], references: [id])
+  address_id  String?
 
   @@unique([address_id])
   @@map("address_type")
@@ -109,8 +109,8 @@ model Account {
 model Account_type {
   id          String  @id @unique
   description String
-  account     Account @relation(fields: [account_id], references: [id])
-  account_id  String
+  account     Account? @relation(fields: [account_id], references: [id])
+  account_id  String?
 
   @@unique([account_id])
   @@map("account_type")
@@ -132,8 +132,8 @@ model Transaction {
 model Transaction_type {
   id             String      @id @unique
   description    String
-  transaction    Transaction @relation(fields: [transaction_id], references: [id])
-  transaction_id String
+  transaction    Transaction? @relation(fields: [transaction_id], references: [id])
+  transaction_id String?
 
   @@unique([transaction_id])
   @@map("transaction_type")

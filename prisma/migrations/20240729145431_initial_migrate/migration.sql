@@ -17,7 +17,7 @@ CREATE TABLE "credentials" (
     "first_name" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
     "birth_place" TEXT NOT NULL,
-    "birth_date" TIMESTAMP(3) NOT NULL,
+    "birth_date" DATE NOT NULL,
     "phone_number" TEXT NOT NULL,
     "national_id" TEXT NOT NULL,
     "is_employeed" BOOLEAN NOT NULL DEFAULT false,
@@ -62,7 +62,7 @@ CREATE TABLE "addresses" (
 CREATE TABLE "address_type" (
     "id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "address_id" TEXT NOT NULL,
+    "address_id" TEXT,
 
     CONSTRAINT "address_type_pkey" PRIMARY KEY ("id")
 );
@@ -84,7 +84,7 @@ CREATE TABLE "accounts" (
 CREATE TABLE "account_type" (
     "id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "account_id" TEXT NOT NULL,
+    "account_id" TEXT,
 
     CONSTRAINT "account_type_pkey" PRIMARY KEY ("id")
 );
@@ -105,7 +105,7 @@ CREATE TABLE "transactions" (
 CREATE TABLE "transaction_type" (
     "id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "transaction_id" TEXT NOT NULL,
+    "transaction_id" TEXT,
 
     CONSTRAINT "transaction_type_pkey" PRIMARY KEY ("id")
 );
@@ -156,16 +156,16 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user
 ALTER TABLE "addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "address_type" ADD CONSTRAINT "address_type_address_id_fkey" FOREIGN KEY ("address_id") REFERENCES "addresses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "address_type" ADD CONSTRAINT "address_type_address_id_fkey" FOREIGN KEY ("address_id") REFERENCES "addresses"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "account_type" ADD CONSTRAINT "account_type_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "account_type" ADD CONSTRAINT "account_type_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transaction_type" ADD CONSTRAINT "transaction_type_transaction_id_fkey" FOREIGN KEY ("transaction_id") REFERENCES "transactions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transaction_type" ADD CONSTRAINT "transaction_type_transaction_id_fkey" FOREIGN KEY ("transaction_id") REFERENCES "transactions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
