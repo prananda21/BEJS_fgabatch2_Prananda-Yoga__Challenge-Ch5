@@ -7,6 +7,7 @@ const main = async () => {
         create: {
             id: "AT-HOME",
             description: "Home Address",
+            address_id: null,
         },
     })
 
@@ -16,6 +17,7 @@ const main = async () => {
         create: {
             id: "AT-OFFICE",
             description: "Office Address",
+            address_id: null,
         },
     })
 
@@ -25,6 +27,7 @@ const main = async () => {
         create: {
             id: "AcT-CHECK",
             description: "Checking Account",
+            account_id: null,
         },
     })
 
@@ -34,6 +37,7 @@ const main = async () => {
         create: {
             id: "AcT-SAVING",
             description: "Saving Account",
+            account_id: null,
         },
     })
 
@@ -43,6 +47,7 @@ const main = async () => {
         create: {
             id: "AcT-MMA",
             description: "Money Market Account",
+            account_id: null,
         },
     })
 
@@ -52,6 +57,7 @@ const main = async () => {
         create: {
             id: "AcT-CDA",
             description: "Certified of Deposit Account",
+            account_id: null,
         },
     })
 
@@ -61,6 +67,7 @@ const main = async () => {
         create: {
             id: "TT",
             description: "Transfer Type",
+            transaction_id: null,
         },
     })
 
@@ -70,6 +77,7 @@ const main = async () => {
         create: {
             id: "TD",
             description: "Deposit Type",
+            transaction_id: null,
         },
     })
 
@@ -79,6 +87,7 @@ const main = async () => {
         create: {
             id: "TW",
             description: "Withdraw Type",
+            transaction_id: null,
         },
     })
 
@@ -88,6 +97,7 @@ const main = async () => {
         create: {
             id: "TF",
             description: "Account Fee Type",
+            transaction_id: null,
         },
     })
 
@@ -97,6 +107,7 @@ const main = async () => {
         create: {
             id: "TI",
             description: "Interest Payment Type",
+            transaction_id: null,
         },
     })
 }
