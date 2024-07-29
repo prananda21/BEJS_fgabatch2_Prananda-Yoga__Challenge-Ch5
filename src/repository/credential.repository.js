@@ -1,5 +1,5 @@
 import hashing from "../provider/bcrypt.js"
-import { prisma } from "../provider/prisma.js"
+import { prisma } from "../database/prisma.js"
 
 class CredentialRepository {
     static create = (
