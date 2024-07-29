@@ -1,10 +1,14 @@
 import { DuplicateDataError } from "../error/DuplicateDataError.js"
 import { NotFoundError } from "../error/NotFoundError.js"
 import { ValidationError } from "../error/ValidationError.js"
-import { prisma } from "../provider/prisma.js"
+import { prisma } from "../database/prisma.js"
 import UserRepository from "../repository/user.repository.js"
 import { HttpStatusCode, HttpStatusMessage } from "../utils/enum.js"
-import { idSchema, userSchema } from "../utils/validation.js"
+import {
+    idSchema,
+    userSchema,
+    userUpdateSchema,
+} from "../utils/validation/user.validation.js"
 
 class UserController {
     static register = async (req, res, next) => {
@@ -90,11 +94,54 @@ class UserController {
         }
     }
 
-    static update = (req, res, next) => {
+    static getAll = async (req, res, next) => {
         try {
-            
+            const user = await UserRepository.findAll()
+
+            res.status(HttpStatusCode.ACCEPTED).json({
+                status: true,
+                message: HttpStatusMessage.SUCCESS_FOUND_USER,
+                data: user,
+            })
         } catch (error) {
-            
+            next(error)
+        }
+    }
+
+    static update = async (req, res, next) => {
+        try {
+            const { id } = req.params
+            const data = req.body
+
+            const { value, error } = userUpdateSchema.validate({
+                id: id,
+                email: data.email,
+                password: data.password,
+                pin: data.pin,
+            })
+
+            if (error) throw new ValidationError()
+
+            const user = await UserRepository.update(value.id, value)
+
+            return res.status(HttpStatusCode.ACCEPTED).json({
+                status: true,
+                message: HttpStatusMessage.SUCCESS_UPDATE_USER,
+                data: user,
+            })
+        } catch (error) {
+            if (
+                error instanceof ValidationError ||
+                error instanceof NotFoundError
+            ) {
+                return res.status(error.code).json({
+                    status: false,
+                    message: error.message,
+                    data: null,
+                })
+            } else {
+                next(error)
+            }
         }
     }
 }

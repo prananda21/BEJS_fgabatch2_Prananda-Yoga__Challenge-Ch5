@@ -1,5 +1,5 @@
 import hashing from "../provider/bcrypt.js"
-import { prisma } from "../provider/prisma.js"
+import { prisma } from "../database/prisma.js"
 
 class UserRepository {
     static create = (email, password, pin) => {
@@ -38,6 +38,41 @@ class UserRepository {
         const user = prisma.user.findUnique({
             where: {
                 email: email,
+            },
+            select: {
+                id: true,
+                email: true,
+                is_verified: true,
+            },
+        })
+
+        return user
+    }
+
+    static findAll = () => {
+        const user = prisma.user.findMany({
+            select: {
+                id: true,
+                email: true,
+                is_verified: true,
+            },
+        })
+
+        return user
+    }
+
+    static update = (id, data) => {
+        const updateData = {}
+        if (data.email) updateData.email = data.email
+        if (data.password) updateData.password = hashing(data.password)
+        if (data.pin) updateData.pin = hashing(data.pin)
+
+        const user = prisma.user.update({
+            where: { id: id },
+            data: {
+                email: updateData.email,
+                password: updateData.password,
+                pin: updateData.pin,
             },
             select: {
                 id: true,
