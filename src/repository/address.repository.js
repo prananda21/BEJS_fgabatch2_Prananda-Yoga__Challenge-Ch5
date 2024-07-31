@@ -37,9 +37,9 @@ class AddressRepository {
         return address;
     };
 
-    static get = (id) => {
+    static get = (user_id, address_id) => {
         const address = prisma.address.findUnique({
-            where: { id: id },
+            where: { id: address_id, user: { id: user_id } },
             select: {
                 id: true,
                 street: true,
@@ -47,8 +47,8 @@ class AddressRepository {
                 province: true,
                 country: true,
                 postal_code: true,
-                type: true,
-                user: true,
+                type: { select: { id: true, description: true } },
+                user: { select: { id: true, email: true, is_verified: true } },
             },
         });
 

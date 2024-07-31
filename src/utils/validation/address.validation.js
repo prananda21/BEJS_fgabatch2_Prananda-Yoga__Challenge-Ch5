@@ -1,4 +1,4 @@
-import Joi from "joi"
+import Joi from "joi";
 
 export const addressSchema = Joi.object({
     street: Joi.string(),
@@ -9,8 +9,9 @@ export const addressSchema = Joi.object({
     postal_code: Joi.string().pattern(/^[0-9]+$/, "numbers"),
     address_type: Joi.string().required(),
     user_id: Joi.string().required(),
-})
+});
 
 export const idAddressSchema = Joi.object({
-    id: Joi.string().required(),
-})
+    user_id: Joi.string().required(),
+    address_id: Joi.string().required(),
+});

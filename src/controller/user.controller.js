@@ -58,7 +58,7 @@ class UserController {
     static get = async (req, res, next) => {
         try {
             const { id } = req.params
-
+            
             const { value, error } = idSchema.validate({
                 id: id,
             })
