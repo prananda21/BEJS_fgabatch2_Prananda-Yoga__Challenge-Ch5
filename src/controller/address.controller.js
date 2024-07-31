@@ -10,6 +10,7 @@ import {
 class AddressController {
     static create = async (req, res, next) => {
         try {
+            const { user_id } = req.params;
             const {
                 street,
                 district,
@@ -18,7 +19,6 @@ class AddressController {
                 country,
                 postal_code,
                 address_type,
-                user_id,
             } = req.body;
 
             const { value, error } = addressSchema.validate({
@@ -33,7 +33,7 @@ class AddressController {
             });
 
             if (error) throw new ValidationError();
-            
+
             const address = await AddressRepository.create(
                 value.street,
                 value.district,
@@ -65,20 +65,25 @@ class AddressController {
 
     static get = async (req, res, next) => {
         try {
-            const { id } = req.params;
+            const { user_id, address_id } = req.params;
 
             const { value, error } = idAddressSchema.validate({
-                id: id,
+                user_id: user_id,
+                address_id: address_id,
             });
 
             if (error) throw new ValidationError();
 
-            const address = await AddressRepository.get(value.id);
+            const address = await AddressRepository.get(
+                value.user_id,
+                value.address_id
+            );
             if (!address) throw new NotFoundError();
 
             return res.status(HttpStatusCode.ACCEPTED).json({
                 status: true,
                 message: HttpStatusMessage.SUCCESS_FOUND_ADDRESS,
+                data: address,
             });
         } catch (error) {
             if (
