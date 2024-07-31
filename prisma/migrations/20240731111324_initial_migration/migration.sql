@@ -53,6 +53,7 @@ CREATE TABLE "addresses" (
     "postal_code" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "type" TEXT NOT NULL,
     "user_id" TEXT,
 
     CONSTRAINT "addresses_pkey" PRIMARY KEY ("id")
@@ -62,7 +63,6 @@ CREATE TABLE "addresses" (
 CREATE TABLE "address_type" (
     "id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "address_id" TEXT,
 
     CONSTRAINT "address_type_pkey" PRIMARY KEY ("id")
 );
@@ -120,19 +120,10 @@ CREATE UNIQUE INDEX "credentials_user_id_key" ON "credentials"("user_id");
 CREATE UNIQUE INDEX "sessions_user_id_key" ON "sessions"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "addresses_user_id_key" ON "addresses"("user_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "address_type_id_key" ON "address_type"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "address_type_address_id_key" ON "address_type"("address_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "accounts_number_key" ON "accounts"("number");
-
--- CreateIndex
-CREATE UNIQUE INDEX "accounts_user_id_key" ON "accounts"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "account_type_id_key" ON "account_type"("id");
@@ -153,10 +144,10 @@ ALTER TABLE "credentials" ADD CONSTRAINT "credentials_user_id_fkey" FOREIGN KEY 
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_type_fkey" FOREIGN KEY ("type") REFERENCES "address_type"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "address_type" ADD CONSTRAINT "address_type_address_id_fkey" FOREIGN KEY ("address_id") REFERENCES "addresses"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;

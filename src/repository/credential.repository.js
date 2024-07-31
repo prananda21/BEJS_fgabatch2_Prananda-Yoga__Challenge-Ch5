@@ -1,5 +1,5 @@
-import hashing from "../provider/bcrypt.js"
-import { prisma } from "../database/prisma.js"
+import hashing from "../provider/bcrypt.js";
+import { prisma } from "../database/prisma.js";
 
 class CredentialRepository {
     static create = (
@@ -42,10 +42,10 @@ class CredentialRepository {
                 mother_name: true,
                 user: { select: { id: true, email: true, is_verified: true } },
             },
-        })
+        });
 
-        return user
-    }
+        return user;
+    };
 
     static findById = (id) => {
         const user = prisma.credential.findUnique({
@@ -63,16 +63,16 @@ class CredentialRepository {
                 mother_name: true,
                 user: { select: { id: true, email: true, is_verified: true } },
             },
-        })
+        });
 
-        return user
-    }
+        return user;
+    };
 
     static findByName = (first_name, last_name) => {
-        const user = prisma.credential.findUnique({
+        const user = prisma.credential.findFirst({
             where: {
-                first_name: first_name,
-                last_name: last_name,
+                first_name,
+                last_name,
             },
             select: {
                 id: true,
@@ -85,10 +85,10 @@ class CredentialRepository {
                 mother_name: true,
                 user: { select: { id: true, email: true, is_verified: true } },
             },
-        })
+        });
 
-        return user
-    }
+        return user;
+    };
 }
 
-export default CredentialRepository
+export default CredentialRepository;
