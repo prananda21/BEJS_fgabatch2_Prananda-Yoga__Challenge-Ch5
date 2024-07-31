@@ -18,6 +18,8 @@ export const HttpStatusMessage = {
     SUCCESS_CREATE_USER_CREDENTIAL: "berhasil membuat credential user",
     SUCCESS_FOUND_USER: "berhasil menemukan data user",
     SUCCESS_UPDATE_USER: "berhasil memperbarui data user",
+    SUCCESS_CREATE_ADDRESS: "berhasil membuat data alamat user",
+    SUCCESS_FOUND_ADDRESS: "berhasil menemukan data address user",
 
     // Error
     VALIDATION_ERROR: "data tidak valid",

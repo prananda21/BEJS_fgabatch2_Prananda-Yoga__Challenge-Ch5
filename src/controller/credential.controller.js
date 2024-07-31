@@ -37,42 +37,37 @@ class CredentialController {
 
             const date = new Date(value.birthDate)
 
-            if (error) {
-                throw new ValidationError(
-                    HttpStatusCode.BAD_REQUEST,
-                    error.message
-                )
-            }
+            if (error) throw new ValidationError()
 
-            const data = CredentialRepository.findByName(
+            const data = await CredentialRepository.findByName(
                 value.firstName,
                 value.lastName
             )
 
             if (data) {
                 throw new DuplicateDataError()
-            } else {
-                const user = await prisma.$transaction([
-                    CredentialRepository.create(
-                        first_name,
-                        last_name,
-                        phone,
-                        birth_place,
-                        date,
-                        national_id,
-                        is_employeed,
-                        job,
-                        mother_name,
-                        user_id
-                    ),
-                ])
-
-                return res.status(HttpStatusCode.CREATED).json({
-                    status: true,
-                    message: HttpStatusMessage.SUCCESS_REGISTER,
-                    data: user,
-                })
             }
+
+            const user = await prisma.$transaction([
+                CredentialRepository.create(
+                    first_name,
+                    last_name,
+                    phone,
+                    birth_place,
+                    date,
+                    national_id,
+                    is_employeed,
+                    job,
+                    mother_name,
+                    user_id
+                ),
+            ])
+
+            return res.status(HttpStatusCode.CREATED).json({
+                status: true,
+                message: HttpStatusMessage.SUCCESS_REGISTER,
+                data: user,
+            })
         } catch (error) {
             if (
                 error instanceof ValidationError ||
