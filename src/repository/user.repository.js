@@ -55,6 +55,8 @@ class UserRepository {
                 id: true,
                 email: true,
                 is_verified: true,
+                addresses: true,
+                accounts: true
             },
         })
 
