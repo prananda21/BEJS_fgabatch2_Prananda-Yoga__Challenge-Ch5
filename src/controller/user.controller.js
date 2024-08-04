@@ -57,10 +57,10 @@ class UserController {
 
     static get = async (req, res, next) => {
         try {
-            const { id } = req.params
+            const { user_id } = req.params
             
             const { value, error } = idSchema.validate({
-                id: id,
+                id: user_id,
             })
 
             if (error) {
@@ -110,11 +110,11 @@ class UserController {
 
     static update = async (req, res, next) => {
         try {
-            const { id } = req.params
+            const { user_id } = req.params
             const data = req.body
 
             const { value, error } = userUpdateSchema.validate({
-                id: id,
+                id: user_id,
                 email: data.email,
                 password: data.password,
                 pin: data.pin,
