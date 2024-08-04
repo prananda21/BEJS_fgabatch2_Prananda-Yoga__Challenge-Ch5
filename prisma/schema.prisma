@@ -5,133 +5,131 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["relationJoins"]
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    id          String      @id @default(uuid())
-    email       String      @unique
-    password    String
-    pin         String
-    is_verified Boolean     @default(false)
-    created_at  DateTime    @default(now())
-    updated_at  DateTime    @updatedAt
-    credential  Credential?
-    sessions    Session[]
-    addresses   Address[]
-    accounts    Account[]
+  id          String      @id @default(uuid())
+  email       String      @unique
+  password    String
+  pin         String
+  is_verified Boolean     @default(false)
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  credential  Credential?
+  sessions    Session[]
+  addresses   Address[]
+  accounts    Account[]
 
-    @@map("users")
+  @@map("users")
 }
 
 model Credential {
-    id           String   @id @default(uuid())
-    first_name   String
-    last_name    String
-    birth_place  String
-    birth_date   DateTime @db.Date
-    phone_number String
-    national_id  String
-    is_employeed Boolean  @default(false)
-    job          String
-    mother_name  String
-    created_at   DateTime @default(now())
-    updated_at   DateTime @updatedAt
-    user_id      String   @unique
-    user         User     @relation(fields: [user_id], references: [id])
+  id           String   @id @default(uuid())
+  first_name   String
+  last_name    String
+  birth_place  String
+  birth_date   DateTime @db.Date
+  phone_number String
+  national_id  String
+  is_employeed Boolean  @default(false)
+  job          String
+  mother_name  String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  user_id      String   @unique
+  user         User     @relation(fields: [user_id], references: [id])
 
-    @@map("credentials")
+  @@map("credentials")
 }
 
 model Session {
-    id            String   @id @default(uuid())
-    access_token  String
-    refresh_token String
-    is_mobile     Boolean  @default(false)
-    expired_at    DateTime
-    user          User?    @relation(fields: [user_id], references: [id])
-    user_id       String?
+  id            String   @id @default(uuid())
+  access_token  String
+  refresh_token String
+  is_mobile     Boolean  @default(false)
+  expired_at    DateTime
+  user          User?    @relation(fields: [user_id], references: [id])
+  user_id       String?
 
-    @@unique([user_id])
-    @@map("sessions")
+  @@unique([user_id])
+  @@map("sessions")
 }
 
 model Address {
-    id           String       @id @default(uuid())
-    street       String?
-    district     String
-    regency      String
-    province     String
-    country      String
-    postal_code  String
-    created_at   DateTime     @default(now())
-    updated_at   DateTime     @updatedAt
-    type         Address_type @relation(fields: [address_type], references: [id])
-    address_type String
-    user         User?        @relation(fields: [user_id], references: [id])
-    user_id      String?
+  id           String       @id @default(uuid())
+  street       String?
+  district     String
+  regency      String
+  province     String
+  country      String
+  postal_code  String
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
+  type         Address_type @relation(fields: [address_type], references: [id])
+  address_type String
+  user         User?        @relation(fields: [user_id], references: [id])
+  user_id      String?
 
-    @@map("addresses")
+  @@map("addresses")
 }
 
 model Address_type {
-    id          String    @id @unique
-    description String
-    Address     Address[]
+  id          String    @id @unique
+  description String
+  Address     Address[]
 
-    @@map("address_type")
+  @@map("address_type")
 }
 
 model Account {
-    id            String         @id @default(uuid())
-    number        String         @unique
-    balance       Float
-    interest_rate Float
-    created_at    DateTime       @default(now())
-    updated_at    DateTime       @updatedAt
-    type          Account_type[]
-    transaction   Transaction[]
-    user          User?          @relation(fields: [user_id], references: [id])
-    user_id       String?
+  id            String        @id @default(uuid())
+  number        String        @unique
+  balance       Float
+  interest_rate Float
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  type          Account_type  @relation(fields: [account_type], references: [id])
+  account_type  String
+  transaction   Transaction[]
+  user          User?         @relation(fields: [user_id], references: [id])
+  user_id       String?
 
-    @@map("accounts")
+  @@map("accounts")
 }
 
 model Account_type {
-    id          String   @id @unique
-    description String
-    account     Account? @relation(fields: [account_id], references: [id])
-    account_id  String?
+  id          String    @id @unique
+  description String
+  account     Account[]
 
-    @@unique([account_id])
-    @@map("account_type")
+  @@map("account_type")
 }
 
 model Transaction {
-    id          String             @id @default(uuid())
-    amount      Float
-    description String
-    created_at  DateTime           @default(now())
-    updated_at  DateTime           @updatedAt
-    type        Transaction_type[]
-    account     Account?           @relation(fields: [account_id], references: [id])
-    account_id  String?
+  id          String             @id @default(uuid())
+  amount      Float
+  description String
+  created_at  DateTime           @default(now())
+  updated_at  DateTime           @updatedAt
+  type        Transaction_type @relation(fields: [transaction_type], references: [id])
+  transaction_type String
+  account     Account?           @relation(fields: [account_id], references: [id])
+  account_id  String?
 
-    @@map("transactions")
+  @@map("transactions")
 }
 
 model Transaction_type {
-    id             String       @id @unique
-    description    String
-    transaction    Transaction? @relation(fields: [transaction_id], references: [id])
-    transaction_id String?
+  id             String       @id @unique
+  description    String
+  transaction    Transaction[]
 
-    @@unique([transaction_id])
-    @@map("transaction_type")
+  @@map("transaction_type")
 }
