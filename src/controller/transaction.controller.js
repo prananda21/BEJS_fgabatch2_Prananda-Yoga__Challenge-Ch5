@@ -5,9 +5,57 @@ import { ValidationError } from "../error/ValidationError.js";
 import AccountRepository from "../repository/account.repository.js";
 import TxRepository from "../repository/transaction.repository.js";
 import { HttpStatusCode, HttpStatusMessage } from "../utils/enum.js";
-import { withdrawValidation } from "../utils/validation/transaction.validation.js";
+import {
+  idTxValidation,
+  withdrawValidation,
+} from "../utils/validation/transaction.validation.js";
 
 class TxController {
+  static find = async (req, res, next) => {
+    try {
+      const { tx_id } = req.params;
+
+      const { value, error } = idTxValidation.validate({
+        tx_id: tx_id,
+      });
+
+      if (error) throw new ValidationError();
+
+      const tx = await TxRepository.find(value.tx_id);
+
+      return res.status(HttpStatusCode.OK).json({
+        status: true,
+        message: HttpStatusMessage.SUCCESS_FOUND_TX,
+        data: tx,
+      });
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(error.code).json({
+          status: false,
+          message: error.message,
+          data: null,
+        });
+      } else {
+        next(error);
+      }
+    }
+  };
+
+  static findAll = async (req, res, next) => {
+    try {
+      let tx = await TxRepository.findAll();
+      if (tx === null) tx = [];
+
+      return res.status(HttpStatusCode.OK).json({
+        status: true,
+        message: HttpStatusMessage.SUCCESS_FOUND_TX,
+        data: tx,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   static transfer = async (req, res, next) => {
     try {
       const { number } = req.params;

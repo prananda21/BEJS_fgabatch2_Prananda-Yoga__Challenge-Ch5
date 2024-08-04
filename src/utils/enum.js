@@ -25,7 +25,9 @@ export const HttpStatusMessage = {
     SUCCESS_CREATE_ACCOUNT: "berhasil membuat data akun user",
     SUCCESS_FOUND_ACCOUNT: "berhasil menemukan data account user",
 
+    SUCCESS_FOUND_TX: "berhasil menemukan data transaksi",
     SUCCESS_TX_TRANFER: "berhasil melakukan transfer",
+
 
     // Error
     VALIDATION_ERROR: "data tidak valid",
