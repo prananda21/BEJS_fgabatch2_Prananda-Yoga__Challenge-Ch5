@@ -23,6 +23,7 @@ router.route("/:user_id/addresses/register").post(AddressController.create);
 // endpoint /api/v1/users/:id/accounts
 router.route("/:user_id/accounts/register").post(AccountController.create);
 router.route("/:user_id/accounts/:account_id").get(AccountController.find);
+router.route("/:user_id/accounts/").get(AccountController.findAll);
 // router.route("/:user_id/accounts/register")
 
 export default router;

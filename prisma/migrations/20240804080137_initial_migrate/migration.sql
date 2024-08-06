@@ -53,7 +53,7 @@ CREATE TABLE "addresses" (
     "postal_code" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "type" TEXT NOT NULL,
+    "address_type" TEXT NOT NULL,
     "user_id" TEXT,
 
     CONSTRAINT "addresses_pkey" PRIMARY KEY ("id")
@@ -75,6 +75,7 @@ CREATE TABLE "accounts" (
     "interest_rate" DOUBLE PRECISION NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "account_type" TEXT NOT NULL,
     "user_id" TEXT,
 
     CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
@@ -84,7 +85,6 @@ CREATE TABLE "accounts" (
 CREATE TABLE "account_type" (
     "id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "account_id" TEXT,
 
     CONSTRAINT "account_type_pkey" PRIMARY KEY ("id")
 );
@@ -96,6 +96,7 @@ CREATE TABLE "transactions" (
     "description" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "transaction_type" TEXT NOT NULL,
     "account_id" TEXT,
 
     CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
@@ -105,7 +106,6 @@ CREATE TABLE "transactions" (
 CREATE TABLE "transaction_type" (
     "id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "transaction_id" TEXT,
 
     CONSTRAINT "transaction_type_pkey" PRIMARY KEY ("id")
 );
@@ -129,13 +129,7 @@ CREATE UNIQUE INDEX "accounts_number_key" ON "accounts"("number");
 CREATE UNIQUE INDEX "account_type_id_key" ON "account_type"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "account_type_account_id_key" ON "account_type"("account_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "transaction_type_id_key" ON "transaction_type"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "transaction_type_transaction_id_key" ON "transaction_type"("transaction_id");
 
 -- AddForeignKey
 ALTER TABLE "credentials" ADD CONSTRAINT "credentials_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -144,19 +138,19 @@ ALTER TABLE "credentials" ADD CONSTRAINT "credentials_user_id_fkey" FOREIGN KEY 
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "addresses" ADD CONSTRAINT "addresses_type_fkey" FOREIGN KEY ("type") REFERENCES "address_type"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_address_type_fkey" FOREIGN KEY ("address_type") REFERENCES "address_type"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_account_type_fkey" FOREIGN KEY ("account_type") REFERENCES "account_type"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "account_type" ADD CONSTRAINT "account_type_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_transaction_type_fkey" FOREIGN KEY ("transaction_type") REFERENCES "transaction_type"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "transaction_type" ADD CONSTRAINT "transaction_type_transaction_id_fkey" FOREIGN KEY ("transaction_id") REFERENCES "transactions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
